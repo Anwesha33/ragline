@@ -1,0 +1,110 @@
+{
+  "notes": "Golden question set for the Northwind Payments corpus. `type` records what kind of retrieval the question stresses: lexical questions contain a rare exact token that favours BM25, semantic questions are paraphrases that share almost no vocabulary with the source and favour the vector side, multihop questions need passages from two different documents, and unanswerable questions have no support in the corpus at all and must be refused. Keeping the mix explicit is what makes the hybrid-vs-single-retriever comparison meaningful rather than an average over whatever questions happened to get written.",
+  "questions": [
+    {
+      "id": "q01",
+      "type": "lexical",
+      "question": "What does error code NW-4221 mean?",
+      "expected_sources": ["corpus/05-error-codes.md"],
+      "must_include": ["refund", "captured amount"],
+      "answerable": true
+    },
+    {
+      "id": "q02",
+      "type": "lexical",
+      "question": "What is NW-5031 and should I retry it?",
+      "expected_sources": ["corpus/05-error-codes.md"],
+      "must_include": ["idempotency", "retry"],
+      "answerable": true
+    },
+    {
+      "id": "q03",
+      "type": "semantic",
+      "question": "How long after a sale can we still put the money back on the customer's card?",
+      "expected_sources": ["corpus/04-refunds.md"],
+      "must_include": ["180 days"],
+      "answerable": true
+    },
+    {
+      "id": "q04",
+      "type": "semantic",
+      "question": "Our retry code generates a fresh key on every attempt. Does that still protect us from charging someone twice?",
+      "expected_sources": ["corpus/02-idempotency.md"],
+      "must_include": ["no"],
+      "answerable": true
+    },
+    {
+      "id": "q05",
+      "type": "lexical",
+      "question": "How long are idempotency keys retained?",
+      "expected_sources": ["corpus/02-idempotency.md"],
+      "must_include": ["24 hours"],
+      "answerable": true
+    },
+    {
+      "id": "q06",
+      "type": "multihop",
+      "question": "A merchant's webhook endpoint keeps timing out. How many delivery attempts do we make before giving up, and is that something on-call should treat as an incident?",
+      "expected_sources": ["corpus/03-webhooks.md", "corpus/07-oncall-runbook.md"],
+      "must_include": ["seven", "7"],
+      "match_any": true,
+      "answerable": true
+    },
+    {
+      "id": "q07",
+      "type": "semantic",
+      "question": "Why isn't the money-recording system run in both regions at once?",
+      "expected_sources": ["corpus/01-architecture.md"],
+      "must_include": ["consensus"],
+      "answerable": true
+    },
+    {
+      "id": "q08",
+      "type": "lexical",
+      "question": "How do I verify the Northwind-Signature header?",
+      "expected_sources": ["corpus/03-webhooks.md"],
+      "must_include": ["HMAC-SHA256", "raw"],
+      "answerable": true
+    },
+    {
+      "id": "q09",
+      "type": "semantic",
+      "question": "A customer has raised a chargeback. Can we still refund them through the API?",
+      "expected_sources": ["corpus/04-refunds.md"],
+      "must_include": ["NW-4093"],
+      "answerable": true
+    },
+    {
+      "id": "q10",
+      "type": "multihop",
+      "question": "If Redis becomes unavailable, what happens to payment writes?",
+      "expected_sources": ["corpus/02-idempotency.md"],
+      "must_include": ["503"],
+      "answerable": true
+    },
+    {
+      "id": "q11",
+      "type": "semantic",
+      "question": "What request rate does a merchant on the Growth plan get?",
+      "expected_sources": ["corpus/06-rate-limits.md"],
+      "must_include": ["200"],
+      "answerable": true
+    },
+    {
+      "id": "q12",
+      "type": "unanswerable",
+      "question": "What does Northwind charge per transaction in euros?",
+      "expected_sources": [],
+      "must_include": [],
+      "answerable": false
+    },
+    {
+      "id": "q13",
+      "type": "unanswerable",
+      "question": "Which Kubernetes version do the payment services run on?",
+      "expected_sources": [],
+      "must_include": [],
+      "answerable": false
+    }
+  ]
+}

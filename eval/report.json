@@ -1,0 +1,399 @@
+{
+  "summary": {
+    "questions": 13,
+    "evaluated": 7,
+    "errors": 6,
+    "retrieval": {
+      "recall_fusion_only": 1.0,
+      "recall_after_rerank": 1.0,
+      "mrr_fusion_only": 1.0,
+      "mrr_after_rerank": 1.0
+    },
+    "answers": {
+      "accuracy_answerable": 1.0,
+      "cited_rate": 1.0,
+      "refusal_correct_on_unanswerable": 1.0,
+      "false_refusals": 0
+    },
+    "groundedness": {
+      "judged": 7,
+      "grounded_rate": 0.286,
+      "ungrounded": [
+        "q01",
+        "q02",
+        "q08",
+        "q10",
+        "q11"
+      ]
+    },
+    "latency": {
+      "p50_total_ms": 13616,
+      "p95_total_ms": 27292,
+      "p50_ttft_ms": 2663,
+      "mean_rerank_ms": 11353,
+      "mean_search_ms": 1,
+      "mean_embed_ms": 0
+    },
+    "cost": {
+      "mean_usd_per_query": 0.00046,
+      "mean_prompt_tokens": 3259,
+      "mean_output_tokens": 336
+    },
+    "by_type": {
+      "lexical": 1.0,
+      "multihop": 1.0,
+      "semantic": 1.0,
+      "unanswerable": 1.0
+    }
+  },
+  "results": [
+    {
+      "id": "q01",
+      "type": "lexical",
+      "question": "What does error code NW-4221 mean?",
+      "search_ms": 740,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "answer": "The error code `NW-4221` means that a refund would exceed the captured amount [1][2]. This error returns an HTTP status of 422 and should not be retried [1].",
+      "refused": false,
+      "citation_count": 2,
+      "usage": {
+        "cache_hit": false,
+        "model": "gemini-3.5-flash",
+        "reranker": "llm:gemini-flash-lite-latest",
+        "retrieved_chunks": 12,
+        "context_chunks": 5,
+        "embed_ms": 0,
+        "search_ms": 1,
+        "rerank_ms": 10309,
+        "generate_ms": 2664,
+        "ttft_ms": 2663,
+        "total_ms": 12977,
+        "prompt_tokens": 3713,
+        "output_tokens": 312,
+        "cost_usd": 0.0004961000000000001
+      },
+      "has_expected_fact": true,
+      "correct": true,
+      "cited": true,
+      "judge": {
+        "supported_claims": 0,
+        "unsupported_claims": 2,
+        "grounded": false,
+        "unsupported": [
+          "The error code NW-4221 means that a refund would exceed the captured amount",
+          "This error returns an HTTP status of 422 and should not be retried"
+        ],
+        "notes": "The provided sources do not contain any information regarding error code NW-4221."
+      },
+      "grounded": false
+    },
+    {
+      "id": "q02",
+      "type": "lexical",
+      "question": "What is NW-5031 and should I retry it?",
+      "search_ms": 638,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "answer": "`NW-5031` is a 503 status error code indicating that the idempotency store is unavailable and the write request was rejected [1]. This error occurs when Redis is unavailable, as the system rejects write requests to avoid processing them without idempotency protection [2]. You should retry this request with backoff [1].",
+      "refused": false,
+      "citation_count": 2,
+      "usage": {
+        "cache_hit": false,
+        "model": "gemini-3.5-flash",
+        "reranker": "llm:gemini-flash-lite-latest",
+        "retrieved_chunks": 12,
+        "context_chunks": 5,
+        "embed_ms": 0,
+        "search_ms": 1,
+        "rerank_ms": 9878,
+        "generate_ms": 3734,
+        "ttft_ms": 3734,
+        "total_ms": 13616,
+        "prompt_tokens": 3944,
+        "output_tokens": 337,
+        "cost_usd": 0.0005292
+      },
+      "has_expected_fact": true,
+      "correct": true,
+      "cited": true,
+      "judge": {
+        "supported_claims": 2,
+        "unsupported_claims": 2,
+        "grounded": false,
+        "unsupported": [
+          "indicating that the idempotency store is unavailable and the write request was rejected",
+          "This error occurs when Redis is unavailable, as the system rejects write requests to avoid processing them without idempotency protection"
+        ],
+        "notes": "The provided sources do not explicitly define the meaning of NW-5031 beyond the truncated word 'Idempoten...' or confirm the specific behavior regarding Redis unavailability."
+      },
+      "grounded": false
+    },
+    {
+      "id": "q03",
+      "type": "semantic",
+      "question": "How long after a sale can we still put the money back on the customer's card?",
+      "search_ms": 447,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "answer": "A payment can be refunded to the customer's original payment method (such as their card) for up to 180 days after it succeeds [1] [2]. After this 180-day window, the original authorization record is typically no longer available at most acquirers, and the refund must instead be handled manually as a bank transfer initiated through support [1].",
+      "refused": false,
+      "citation_count": 2,
+      "usage": {
+        "cache_hit": false,
+        "model": "gemini-3.5-flash",
+        "reranker": "llm:gemini-flash-lite-latest",
+        "retrieved_chunks": 12,
+        "context_chunks": 5,
+        "embed_ms": 0,
+        "search_ms": 2,
+        "rerank_ms": 18709,
+        "generate_ms": 8578,
+        "ttft_ms": 8306,
+        "total_ms": 27292,
+        "prompt_tokens": 2763,
+        "output_tokens": 346,
+        "cost_usd": 0.0004147
+      },
+      "has_expected_fact": true,
+      "correct": true,
+      "cited": true,
+      "judge": {
+        "supported_claims": 2,
+        "unsupported_claims": 0,
+        "grounded": true,
+        "unsupported": [],
+        "notes": "The answer accurately reflects the 180-day refund window and the subsequent requirement for manual bank transfers as stated in the provided source."
+      },
+      "grounded": true
+    },
+    {
+      "id": "q04",
+      "type": "semantic",
+      "question": "Our retry code generates a fresh key on every attempt. Does that still protect us from charging someone twice?",
+      "search_ms": 449,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "error": "chat failed: HTTP Error 500: Internal Server Error"
+    },
+    {
+      "id": "q05",
+      "type": "lexical",
+      "question": "How long are idempotency keys retained?",
+      "search_ms": 468,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "error": "chat failed: HTTP Error 500: Internal Server Error"
+    },
+    {
+      "id": "q06",
+      "type": "multihop",
+      "question": "A merchant's webhook endpoint keeps timing out. How many delivery attempts do we make before giving up, and is that something on-call should treat as an incident?",
+      "search_ms": 454,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "error": "chat failed: HTTP Error 500: Internal Server Error"
+    },
+    {
+      "id": "q07",
+      "type": "semantic",
+      "question": "Why isn't the money-recording system run in both regions at once?",
+      "search_ms": 481,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "error": "chat failed: HTTP Error 500: Internal Server Error"
+    },
+    {
+      "id": "q08",
+      "type": "lexical",
+      "question": "How do I verify the Northwind-Signature header?",
+      "search_ms": 460,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "answer": "To verify the `Northwind-Signature` header, you must compute an `HMAC-SHA256` signature over the string `{timestamp}.{raw_body}` using your endpoint's signing secret, and then compare that computed value to the `v1` parameter in the header using a constant-time comparison [1]. \n\nWhen performing this verification, you must follow two strict rules:\n* **Use the raw request body:** You must use the raw body before any JSON parsing or re-serialization takes place, because re-serializing alters key order and whitespace, which will prevent the signature from matching [1].\n* **Check the timestamp:** You must reject any deliveries with a timestamp that is more than 5 minutes old to protect against replay attacks [1].",
+      "refused": false,
+      "citation_count": 1,
+      "usage": {
+        "cache_hit": false,
+        "model": "gemini-3.5-flash",
+        "reranker": "llm:gemini-flash-lite-latest",
+        "retrieved_chunks": 12,
+        "context_chunks": 5,
+        "embed_ms": 0,
+        "search_ms": 1,
+        "rerank_ms": 14353,
+        "generate_ms": 4098,
+        "ttft_ms": 3592,
+        "total_ms": 18454,
+        "prompt_tokens": 3627,
+        "output_tokens": 427,
+        "cost_usd": 0.0005335
+      },
+      "has_expected_fact": true,
+      "correct": true,
+      "cited": true,
+      "judge": {
+        "supported_claims": 1,
+        "unsupported_claims": 2,
+        "grounded": false,
+        "unsupported": [
+          "You must use the raw body before any JSON parsing or re-serialization takes place, because re-serializing alters key order and whitespace, which will prevent the signature from matching",
+          "You must reject any deliveries with a timestamp that is more than 5 minutes old to protect against replay attacks"
+        ],
+        "notes": "The provided sources do not contain information regarding the requirement to use raw bodies to avoid re-serialization issues or the 5-minute timestamp threshold for replay protection."
+      },
+      "grounded": false
+    },
+    {
+      "id": "q09",
+      "type": "semantic",
+      "question": "A customer has raised a chargeback. Can we still refund them through the API?",
+      "search_ms": 462,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "error": "chat failed: HTTP Error 500: Internal Server Error"
+    },
+    {
+      "id": "q10",
+      "type": "multihop",
+      "question": "If Redis becomes unavailable, what happens to payment writes?",
+      "search_ms": 428,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "answer": "If Redis becomes unavailable, the `payment-api` rejects write requests with a `503` status code [1]. Instead of degrading and processing the payments without idempotency protection, the system fails closed because the cost of a duplicate charge is much higher than the cost of a brief outage [1].",
+      "refused": false,
+      "citation_count": 1,
+      "usage": {
+        "cache_hit": false,
+        "model": "gemini-3.5-flash",
+        "reranker": "llm:gemini-flash-lite-latest",
+        "retrieved_chunks": 12,
+        "context_chunks": 5,
+        "embed_ms": 0,
+        "search_ms": 1,
+        "rerank_ms": 15853,
+        "generate_ms": 2708,
+        "ttft_ms": 2513,
+        "total_ms": 18565,
+        "prompt_tokens": 3027,
+        "output_tokens": 329,
+        "cost_usd": 0.00043430000000000004
+      },
+      "has_expected_fact": true,
+      "correct": true,
+      "cited": true,
+      "judge": {
+        "supported_claims": 0,
+        "unsupported_claims": 2,
+        "grounded": false,
+        "unsupported": [
+          "If Redis becomes unavailable, the payment-api rejects write requests with a 503 status code",
+          "the system fails closed because the cost of a duplicate charge is much higher than the cost of a brief outage"
+        ],
+        "notes": "The provided sources describe how Redis is used for idempotency but do not contain information regarding the system's behavior or error codes when Redis becomes unavailable."
+      },
+      "grounded": false
+    },
+    {
+      "id": "q11",
+      "type": "semantic",
+      "question": "What request rate does a merchant on the Growth plan get?",
+      "search_ms": 464,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "answer": "A merchant on the Growth plan gets a sustained rate of 200 requests per second with a burst capacity of 400 [1]. For read endpoints (`GET`), they draw from a separate bucket with four times the sustained rate [1].",
+      "refused": false,
+      "citation_count": 1,
+      "usage": {
+        "cache_hit": false,
+        "model": "gemini-3.5-flash",
+        "reranker": "llm:gemini-flash-lite-latest",
+        "retrieved_chunks": 12,
+        "context_chunks": 5,
+        "embed_ms": 0,
+        "search_ms": 1,
+        "rerank_ms": 8558,
+        "generate_ms": 2507,
+        "ttft_ms": 2343,
+        "total_ms": 11068,
+        "prompt_tokens": 3052,
+        "output_tokens": 318,
+        "cost_usd": 0.00043240000000000005
+      },
+      "has_expected_fact": true,
+      "correct": true,
+      "cited": true,
+      "judge": {
+        "supported_claims": 1,
+        "unsupported_claims": 1,
+        "grounded": false,
+        "unsupported": [
+          "For read endpoints (GET), they draw from a separate bucket with four times the sustained rate"
+        ],
+        "notes": "The provided sources do not contain information regarding read endpoints or separate buckets for GET requests."
+      },
+      "grounded": false
+    },
+    {
+      "id": "q12",
+      "type": "unanswerable",
+      "question": "What does Northwind charge per transaction in euros?",
+      "search_ms": 440,
+      "recall_fusion": NaN,
+      "mrr_fusion": NaN,
+      "error": "chat failed: HTTP Error 500: Internal Server Error"
+    },
+    {
+      "id": "q13",
+      "type": "unanswerable",
+      "question": "Which Kubernetes version do the payment services run on?",
+      "search_ms": 461,
+      "recall_fusion": NaN,
+      "mrr_fusion": NaN,
+      "recall_reranked": NaN,
+      "mrr_reranked": NaN,
+      "answer": "The provided documentation does not cover which Kubernetes version the payment services run on.",
+      "refused": true,
+      "citation_count": 0,
+      "usage": {
+        "cache_hit": false,
+        "model": "gemini-3.5-flash",
+        "reranker": "llm:gemini-flash-lite-latest",
+        "retrieved_chunks": 12,
+        "context_chunks": 5,
+        "embed_ms": 0,
+        "search_ms": 0,
+        "rerank_ms": 1810,
+        "generate_ms": 2221,
+        "ttft_ms": 2210,
+        "total_ms": 4032,
+        "prompt_tokens": 2690,
+        "output_tokens": 281,
+        "cost_usd": 0.00038140000000000005
+      },
+      "correct": true,
+      "has_expected_fact": null,
+      "cited": null,
+      "judge": {
+        "supported_claims": 1,
+        "unsupported_claims": 0,
+        "grounded": true,
+        "unsupported": [],
+        "notes": "The answer correctly identifies that the provided sources do not contain information regarding the Kubernetes version."
+      },
+      "grounded": true
+    }
+  ]
+}

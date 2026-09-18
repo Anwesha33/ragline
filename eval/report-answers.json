@@ -1,0 +1,415 @@
+{
+  "summary": {
+    "questions": 6,
+    "evaluated": 6,
+    "errors": 0,
+    "retrieval": {
+      "note": "document-level metrics saturate on a small corpus; the fact-level numbers are the ones that discriminate between retrieval settings",
+      "doc_recall_fusion_only": 1.0,
+      "doc_recall_after_rerank": 1.0,
+      "doc_mrr_fusion_only": 1.0,
+      "doc_mrr_after_rerank": 1.0,
+      "fact_hit_fusion_only": 1.0,
+      "fact_hit_after_rerank": 1.0,
+      "fact_mrr_fusion_only": 0.8,
+      "fact_mrr_after_rerank": 1.0
+    },
+    "answers": {
+      "scored": 6,
+      "accuracy_answerable": 1.0,
+      "cited_rate": 0.75,
+      "refusal_correct_on_unanswerable": 1.0,
+      "false_refusals": 0
+    },
+    "groundedness": {
+      "judged": 6,
+      "grounded_rate": 1.0,
+      "ungrounded": []
+    },
+    "latency": {
+      "p50_total_ms": 4456,
+      "p95_total_ms": 7674,
+      "p50_ttft_ms": 1105,
+      "mean_rerank_ms": 2611,
+      "mean_search_ms": 1,
+      "mean_embed_ms": 0
+    },
+    "cost": {
+      "mean_usd_per_query": 0.000432,
+      "mean_prompt_tokens": 3085,
+      "mean_output_tokens": 309
+    },
+    "by_type": {
+      "lexical": 1.0,
+      "multihop": 1.0,
+      "semantic": 1.0,
+      "unanswerable": 1.0
+    }
+  },
+  "results": [
+    {
+      "id": "q01",
+      "type": "lexical",
+      "question": "What does error code NW-4221 mean?",
+      "search_ms": 18,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "fact_hit_fusion": 1.0,
+      "fact_mrr_fusion": 1.0,
+      "fusion_chunks": [
+        {
+          "source": "corpus/05-error-codes.md",
+          "heading": "Error codes \u203a 4xx \u2014 the request was wrong",
+          "relevant": true
+        },
+        {
+          "source": "corpus/05-error-codes.md",
+          "heading": "Error codes \u203a 5xx \u2014 we failed",
+          "relevant": false
+        },
+        {
+          "source": "corpus/05-error-codes.md",
+          "heading": "Error codes",
+          "relevant": false
+        },
+        {
+          "source": "corpus/06-rate-limits.md",
+          "heading": "Rate limits \u203a Exceeding the limit",
+          "relevant": false
+        },
+        {
+          "source": "corpus/05-error-codes.md",
+          "heading": "Error codes \u203a `NW-5040` deserves its own section",
+          "relevant": false
+        }
+      ],
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "fact_hit_reranked": 1.0,
+      "fact_mrr_reranked": 1.0,
+      "answer": "Error code `NW-4221` means that a requested refund would exceed the captured amount [1, 2].",
+      "refused": false,
+      "citation_count": 0,
+      "usage": {
+        "cache_hit": false,
+        "model": "gemini-3.5-flash-lite",
+        "reranker": "llm:gemini-flash-lite-latest",
+        "retrieved_chunks": 12,
+        "context_chunks": 5,
+        "embed_ms": 0,
+        "search_ms": 1,
+        "rerank_ms": 2935,
+        "generate_ms": 1517,
+        "ttft_ms": 1431,
+        "total_ms": 4456,
+        "prompt_tokens": 3775,
+        "output_tokens": 293,
+        "cost_usd": 0.0004947
+      },
+      "has_expected_fact": true,
+      "correct": true,
+      "cited": false,
+      "judge": {
+        "supported_claims": 1,
+        "unsupported_claims": 0,
+        "grounded": true,
+        "unsupported": [],
+        "notes": "The claim that NW-4221 means a refund would exceed the captured amount is directly supported by both source 1 and source 2."
+      },
+      "grounded": true
+    },
+    {
+      "id": "q03",
+      "type": "semantic",
+      "question": "How long after a sale can we still put the money back on the customer's card?",
+      "search_ms": 11,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "fact_hit_fusion": 1.0,
+      "fact_mrr_fusion": 1.0,
+      "fusion_chunks": [
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a Eligibility window",
+          "relevant": true
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds",
+          "relevant": false
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a Timing",
+          "relevant": false
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a Failure modes",
+          "relevant": false
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a Balance and funding",
+          "relevant": false
+        }
+      ],
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "fact_hit_reranked": 1.0,
+      "fact_mrr_reranked": 1.0,
+      "answer": "A payment can be refunded up to 180 days after it has succeeded [1]. After this 180-day window, the original authorization record is usually no longer available at acquirers, and the refund must instead be handled manually as a bank transfer through support [1].",
+      "refused": false,
+      "citation_count": 1,
+      "usage": {
+        "cache_hit": false,
+        "model": "gemini-3.5-flash-lite",
+        "reranker": "llm:gemini-flash-lite-latest",
+        "retrieved_chunks": 12,
+        "context_chunks": 5,
+        "embed_ms": 0,
+        "search_ms": 1,
+        "rerank_ms": 1475,
+        "generate_ms": 3586,
+        "ttft_ms": 3429,
+        "total_ms": 5065,
+        "prompt_tokens": 2789,
+        "output_tokens": 327,
+        "cost_usd": 0.0004097
+      },
+      "has_expected_fact": true,
+      "correct": true,
+      "cited": true,
+      "judge": {
+        "supported_claims": 2,
+        "unsupported_claims": 0,
+        "grounded": true,
+        "unsupported": [],
+        "notes": "The answer accurately reflects the information provided in the source regarding the 180-day refund window and the process for handling refunds after that period."
+      },
+      "grounded": true
+    },
+    {
+      "id": "q06",
+      "type": "multihop",
+      "question": "A merchant's webhook endpoint keeps timing out. How many delivery attempts do we make before giving up, and is that something on-call should treat as an incident?",
+      "search_ms": 10,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "fact_hit_fusion": 1.0,
+      "fact_mrr_fusion": 1.0,
+      "fusion_chunks": [
+        {
+          "source": "corpus/03-webhooks.md",
+          "heading": "Webhooks \u203a Retry schedule",
+          "relevant": true
+        },
+        {
+          "source": "corpus/07-oncall-runbook.md",
+          "heading": "On-call runbook \u203a `WebhookQueueDepthHigh`",
+          "relevant": false
+        },
+        {
+          "source": "corpus/03-webhooks.md",
+          "heading": "Webhooks",
+          "relevant": false
+        },
+        {
+          "source": "corpus/03-webhooks.md",
+          "heading": "Webhooks \u203a Delivery guarantees",
+          "relevant": false
+        },
+        {
+          "source": "corpus/03-webhooks.md",
+          "heading": "Webhooks \u203a Event types",
+          "relevant": false
+        }
+      ],
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "fact_hit_reranked": 1.0,
+      "fact_mrr_reranked": 1.0,
+      "answer": "We make a total of seven delivery attempts before marking the event `undeliverable` [1]. An endpoint timing out consistently is nearly always not an incident, as it will automatically disable itself after 20 consecutive failures [1, 2]. On-call should let this happen, confirm the merchant was emailed, and only escalate if queue depth is high across many endpoints [2].",
+      "refused": false,
+      "citation_count": 2,
+      "usage": {
+        "cache_hit": false,
+        "model": "gemini-3.5-flash-lite",
+        "reranker": "llm:gemini-flash-lite-latest",
+        "retrieved_chunks": 12,
+        "context_chunks": 5,
+        "embed_ms": 0,
+        "search_ms": 1,
+        "rerank_ms": 6372,
+        "generate_ms": 1299,
+        "ttft_ms": 1093,
+        "total_ms": 7674,
+        "prompt_tokens": 3036,
+        "output_tokens": 345,
+        "cost_usd": 0.0004416
+      },
+      "has_expected_fact": true,
+      "correct": true,
+      "cited": true,
+      "judge": {
+        "supported_claims": 4,
+        "unsupported_claims": 0,
+        "grounded": true,
+        "unsupported": [],
+        "notes": "The answer accurately reflects the retry policy and on-call procedures described in the provided sources."
+      },
+      "grounded": true
+    },
+    {
+      "id": "q09",
+      "type": "semantic",
+      "question": "A customer has raised a chargeback. Can we still refund them through the API?",
+      "search_ms": 11,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "fact_hit_fusion": 1.0,
+      "fact_mrr_fusion": 0.2,
+      "fusion_chunks": [
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds",
+          "relevant": false
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a API",
+          "relevant": false
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a Eligibility window",
+          "relevant": false
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a Balance and funding",
+          "relevant": false
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a Failure modes",
+          "relevant": true
+        }
+      ],
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "fact_hit_reranked": 1.0,
+      "fact_mrr_reranked": 1.0,
+      "answer": "No, you cannot refund them through the API because refunds on a payment that is under dispute are blocked with error code `NW-4093` [1, 2]. Refunding a disputed payment would result in paying the customer twice, as the dispute process may already return the funds [1].",
+      "refused": false,
+      "citation_count": 1,
+      "usage": {
+        "cache_hit": false,
+        "model": "gemini-3.5-flash-lite",
+        "reranker": "llm:gemini-flash-lite-latest",
+        "retrieved_chunks": 12,
+        "context_chunks": 5,
+        "embed_ms": 0,
+        "search_ms": 1,
+        "rerank_ms": 1556,
+        "generate_ms": 892,
+        "ttft_ms": 723,
+        "total_ms": 2452,
+        "prompt_tokens": 3206,
+        "output_tokens": 329,
+        "cost_usd": 0.00045220000000000004
+      },
+      "has_expected_fact": true,
+      "correct": true,
+      "cited": true,
+      "judge": {
+        "supported_claims": 2,
+        "unsupported_claims": 0,
+        "grounded": true,
+        "unsupported": [],
+        "notes": "The answer accurately reflects the information provided in the sources regarding the blocking of refunds for disputed payments."
+      },
+      "grounded": true
+    },
+    {
+      "id": "q12",
+      "type": "unanswerable",
+      "question": "What does Northwind charge per transaction in euros?",
+      "search_ms": 8,
+      "recall_fusion": NaN,
+      "mrr_fusion": NaN,
+      "recall_reranked": NaN,
+      "mrr_reranked": NaN,
+      "answer": "The provided documentation does not cover what Northwind charges per transaction in euros.",
+      "refused": true,
+      "citation_count": 0,
+      "usage": {
+        "cache_hit": false,
+        "model": "gemini-3.5-flash-lite",
+        "reranker": "llm:gemini-flash-lite-latest",
+        "retrieved_chunks": 12,
+        "context_chunks": 5,
+        "embed_ms": 0,
+        "search_ms": 1,
+        "rerank_ms": 1388,
+        "generate_ms": 1147,
+        "ttft_ms": 1105,
+        "total_ms": 2537,
+        "prompt_tokens": 3012,
+        "output_tokens": 281,
+        "cost_usd": 0.0004136
+      },
+      "correct": true,
+      "has_expected_fact": null,
+      "cited": null,
+      "judge": {
+        "supported_claims": 0,
+        "unsupported_claims": 0,
+        "grounded": true,
+        "unsupported": [],
+        "notes": "The answer correctly identifies that the provided sources do not contain information regarding transaction fees."
+      },
+      "grounded": true
+    },
+    {
+      "id": "q13",
+      "type": "unanswerable",
+      "question": "Which Kubernetes version do the payment services run on?",
+      "search_ms": 9,
+      "recall_fusion": NaN,
+      "mrr_fusion": NaN,
+      "recall_reranked": NaN,
+      "mrr_reranked": NaN,
+      "answer": "The provided documentation does not cover which Kubernetes version the payment services run on.",
+      "refused": true,
+      "citation_count": 0,
+      "usage": {
+        "cache_hit": false,
+        "model": "gemini-3.5-flash-lite",
+        "reranker": "llm:gemini-flash-lite-latest",
+        "retrieved_chunks": 12,
+        "context_chunks": 5,
+        "embed_ms": 0,
+        "search_ms": 1,
+        "rerank_ms": 1938,
+        "generate_ms": 1039,
+        "ttft_ms": 1038,
+        "total_ms": 2981,
+        "prompt_tokens": 2690,
+        "output_tokens": 281,
+        "cost_usd": 0.00038140000000000005
+      },
+      "correct": true,
+      "has_expected_fact": null,
+      "cited": null,
+      "judge": {
+        "supported_claims": 1,
+        "unsupported_claims": 0,
+        "grounded": true,
+        "unsupported": [],
+        "notes": "The answer correctly identifies that the provided sources do not contain information regarding the Kubernetes version."
+      },
+      "grounded": true
+    }
+  ]
+}

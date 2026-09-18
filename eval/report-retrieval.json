@@ -1,0 +1,1064 @@
+{
+  "summary": {
+    "questions": 13,
+    "evaluated": 13,
+    "errors": 0,
+    "retrieval": {
+      "note": "document-level metrics saturate on a small corpus; the fact-level numbers are the ones that discriminate between retrieval settings",
+      "doc_recall_fusion_only": 1.0,
+      "doc_recall_after_rerank": 1.0,
+      "doc_mrr_fusion_only": 1.0,
+      "doc_mrr_after_rerank": 1.0,
+      "fact_hit_fusion_only": 1.0,
+      "fact_hit_after_rerank": 1.0,
+      "fact_mrr_fusion_only": 0.927,
+      "fact_mrr_after_rerank": 1.0
+    },
+    "answers": {
+      "scored": 0,
+      "accuracy_answerable": 0.0,
+      "cited_rate": 0.0,
+      "refusal_correct_on_unanswerable": 0.0,
+      "false_refusals": 0
+    },
+    "groundedness": {
+      "judged": 0,
+      "grounded_rate": 0.0,
+      "ungrounded": []
+    },
+    "latency": {
+      "p50_total_ms": 0,
+      "p95_total_ms": 0,
+      "p50_ttft_ms": 0,
+      "mean_rerank_ms": 2578,
+      "mean_search_ms": 1,
+      "mean_embed_ms": 0
+    },
+    "cost": {
+      "mean_usd_per_query": 0.0,
+      "mean_prompt_tokens": 0,
+      "mean_output_tokens": 0
+    },
+    "by_type": {}
+  },
+  "results": [
+    {
+      "id": "q01",
+      "type": "lexical",
+      "question": "What does error code NW-4221 mean?",
+      "search_ms": 15,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "fact_hit_fusion": 1.0,
+      "fact_mrr_fusion": 1.0,
+      "fusion_chunks": [
+        {
+          "source": "corpus/05-error-codes.md",
+          "heading": "Error codes \u203a 4xx \u2014 the request was wrong",
+          "relevant": true
+        },
+        {
+          "source": "corpus/05-error-codes.md",
+          "heading": "Error codes \u203a 5xx \u2014 we failed",
+          "relevant": false
+        },
+        {
+          "source": "corpus/05-error-codes.md",
+          "heading": "Error codes",
+          "relevant": false
+        },
+        {
+          "source": "corpus/06-rate-limits.md",
+          "heading": "Rate limits \u203a Exceeding the limit",
+          "relevant": false
+        },
+        {
+          "source": "corpus/05-error-codes.md",
+          "heading": "Error codes \u203a `NW-5040` deserves its own section",
+          "relevant": false
+        }
+      ],
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "fact_hit_reranked": 1.0,
+      "fact_mrr_reranked": 1.0,
+      "reranked_chunks": [
+        {
+          "source": "corpus/05-error-codes.md",
+          "heading": "Error codes \u203a 4xx \u2014 the request was wrong",
+          "rerank_score": 10,
+          "relevant": true
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a Eligibility window",
+          "rerank_score": 7,
+          "relevant": true
+        },
+        {
+          "source": "corpus/05-error-codes.md",
+          "heading": "Error codes",
+          "rerank_score": 1,
+          "relevant": false
+        },
+        {
+          "source": "corpus/06-rate-limits.md",
+          "heading": "Rate limits \u203a Exceeding the limit",
+          "rerank_score": 1,
+          "relevant": false
+        },
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a Behaviour",
+          "rerank_score": 1,
+          "relevant": false
+        }
+      ],
+      "rerank_timings": {
+        "embed_ms": 0,
+        "search_ms": 0,
+        "rerank_ms": 1789,
+        "reranker": "llm:gemini-flash-lite-latest",
+        "candidates": 12,
+        "reordered_by_rerank": 8
+      },
+      "usage": {
+        "rerank_ms": 1789,
+        "search_ms": 0,
+        "embed_ms": 0
+      },
+      "correct": null,
+      "refused": null
+    },
+    {
+      "id": "q02",
+      "type": "lexical",
+      "question": "What is NW-5031 and should I retry it?",
+      "search_ms": 6,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "fact_hit_fusion": 1.0,
+      "fact_mrr_fusion": 1.0,
+      "fusion_chunks": [
+        {
+          "source": "corpus/05-error-codes.md",
+          "heading": "Error codes \u203a 5xx \u2014 we failed",
+          "relevant": true
+        },
+        {
+          "source": "corpus/05-error-codes.md",
+          "heading": "Error codes \u203a `NW-5040` deserves its own section",
+          "relevant": true
+        },
+        {
+          "source": "corpus/05-error-codes.md",
+          "heading": "Error codes \u203a 4xx \u2014 the request was wrong",
+          "relevant": true
+        },
+        {
+          "source": "corpus/06-rate-limits.md",
+          "heading": "Rate limits \u203a Exceeding the limit",
+          "relevant": false
+        },
+        {
+          "source": "corpus/05-error-codes.md",
+          "heading": "Error codes",
+          "relevant": false
+        }
+      ],
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "fact_hit_reranked": 1.0,
+      "fact_mrr_reranked": 1.0,
+      "reranked_chunks": [
+        {
+          "source": "corpus/05-error-codes.md",
+          "heading": "Error codes \u203a 5xx \u2014 we failed",
+          "rerank_score": 10,
+          "relevant": true
+        },
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a Behaviour",
+          "rerank_score": 4,
+          "relevant": true
+        },
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a Implementation notes",
+          "rerank_score": 4,
+          "relevant": false
+        },
+        {
+          "source": "corpus/05-error-codes.md",
+          "heading": "Error codes \u203a `NW-5040` deserves its own section",
+          "rerank_score": 1,
+          "relevant": true
+        },
+        {
+          "source": "corpus/05-error-codes.md",
+          "heading": "Error codes \u203a 4xx \u2014 the request was wrong",
+          "rerank_score": 1,
+          "relevant": true
+        }
+      ],
+      "rerank_timings": {
+        "embed_ms": 0,
+        "search_ms": 1,
+        "rerank_ms": 2516,
+        "reranker": "llm:gemini-flash-lite-latest",
+        "candidates": 12,
+        "reordered_by_rerank": 6
+      },
+      "usage": {
+        "rerank_ms": 2516,
+        "search_ms": 1,
+        "embed_ms": 0
+      },
+      "correct": null,
+      "refused": null
+    },
+    {
+      "id": "q03",
+      "type": "semantic",
+      "question": "How long after a sale can we still put the money back on the customer's card?",
+      "search_ms": 8,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "fact_hit_fusion": 1.0,
+      "fact_mrr_fusion": 1.0,
+      "fusion_chunks": [
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a Eligibility window",
+          "relevant": true
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds",
+          "relevant": false
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a Timing",
+          "relevant": false
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a Failure modes",
+          "relevant": false
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a Balance and funding",
+          "relevant": false
+        }
+      ],
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "fact_hit_reranked": 1.0,
+      "fact_mrr_reranked": 1.0,
+      "reranked_chunks": [
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a Eligibility window",
+          "rerank_score": 10,
+          "relevant": true
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds",
+          "rerank_score": 4,
+          "relevant": false
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a API",
+          "rerank_score": 4,
+          "relevant": false
+        },
+        {
+          "source": "corpus/01-architecture.md",
+          "heading": "Northwind Payments \u2014 Platform Architecture \u203a State machine",
+          "rerank_score": 4,
+          "relevant": false
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a Timing",
+          "rerank_score": 1,
+          "relevant": false
+        }
+      ],
+      "rerank_timings": {
+        "embed_ms": 0,
+        "search_ms": 2,
+        "rerank_ms": 1538,
+        "reranker": "llm:gemini-flash-lite-latest",
+        "candidates": 12,
+        "reordered_by_rerank": 10
+      },
+      "usage": {
+        "rerank_ms": 1538,
+        "search_ms": 2,
+        "embed_ms": 0
+      },
+      "correct": null,
+      "refused": null
+    },
+    {
+      "id": "q04",
+      "type": "semantic",
+      "question": "Our retry code generates a fresh key on every attempt. Does that still protect us from charging someone twice?",
+      "search_ms": 8,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "fact_hit_fusion": 1.0,
+      "fact_mrr_fusion": 1.0,
+      "fusion_chunks": [
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a Retention",
+          "relevant": true
+        },
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a What is not covered",
+          "relevant": true
+        },
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a Implementation notes",
+          "relevant": false
+        },
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a Behaviour",
+          "relevant": true
+        },
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency",
+          "relevant": true
+        }
+      ],
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "fact_hit_reranked": 1.0,
+      "fact_mrr_reranked": 1.0,
+      "reranked_chunks": [
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a What is not covered",
+          "rerank_score": 10,
+          "relevant": true
+        },
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a Retention",
+          "rerank_score": 4,
+          "relevant": true
+        },
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a Sending a key",
+          "rerank_score": 4,
+          "relevant": true
+        },
+        {
+          "source": "corpus/05-error-codes.md",
+          "heading": "Error codes \u203a `NW-5040` deserves its own section",
+          "rerank_score": 4,
+          "relevant": true
+        },
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a Implementation notes",
+          "rerank_score": 1,
+          "relevant": false
+        }
+      ],
+      "rerank_timings": {
+        "embed_ms": 0,
+        "search_ms": 0,
+        "rerank_ms": 6712,
+        "reranker": "llm:gemini-flash-lite-latest",
+        "candidates": 12,
+        "reordered_by_rerank": 12
+      },
+      "usage": {
+        "rerank_ms": 6712,
+        "search_ms": 0,
+        "embed_ms": 0
+      },
+      "correct": null,
+      "refused": null
+    },
+    {
+      "id": "q05",
+      "type": "lexical",
+      "question": "How long are idempotency keys retained?",
+      "search_ms": 5,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "fact_hit_fusion": 1.0,
+      "fact_mrr_fusion": 1.0,
+      "fusion_chunks": [
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a Retention",
+          "relevant": true
+        },
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a Implementation notes",
+          "relevant": false
+        },
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency",
+          "relevant": false
+        },
+        {
+          "source": "corpus/08-data-retention.md",
+          "heading": "Data retention and PII \u203a Retention periods",
+          "relevant": true
+        },
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a Behaviour",
+          "relevant": false
+        }
+      ],
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "fact_hit_reranked": 1.0,
+      "fact_mrr_reranked": 1.0,
+      "reranked_chunks": [
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a Retention",
+          "rerank_score": 10,
+          "relevant": true
+        },
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a Implementation notes",
+          "rerank_score": 7,
+          "relevant": false
+        },
+        {
+          "source": "corpus/08-data-retention.md",
+          "heading": "Data retention and PII \u203a Retention periods",
+          "rerank_score": 7,
+          "relevant": true
+        },
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency",
+          "rerank_score": 4,
+          "relevant": false
+        },
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a Behaviour",
+          "rerank_score": 4,
+          "relevant": false
+        }
+      ],
+      "rerank_timings": {
+        "embed_ms": 1,
+        "search_ms": 1,
+        "rerank_ms": 1417,
+        "reranker": "llm:gemini-flash-lite-latest",
+        "candidates": 12,
+        "reordered_by_rerank": 9
+      },
+      "usage": {
+        "rerank_ms": 1417,
+        "search_ms": 1,
+        "embed_ms": 1
+      },
+      "correct": null,
+      "refused": null
+    },
+    {
+      "id": "q06",
+      "type": "multihop",
+      "question": "A merchant's webhook endpoint keeps timing out. How many delivery attempts do we make before giving up, and is that something on-call should treat as an incident?",
+      "search_ms": 6,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "fact_hit_fusion": 1.0,
+      "fact_mrr_fusion": 1.0,
+      "fusion_chunks": [
+        {
+          "source": "corpus/03-webhooks.md",
+          "heading": "Webhooks \u203a Retry schedule",
+          "relevant": true
+        },
+        {
+          "source": "corpus/07-oncall-runbook.md",
+          "heading": "On-call runbook \u203a `WebhookQueueDepthHigh`",
+          "relevant": false
+        },
+        {
+          "source": "corpus/03-webhooks.md",
+          "heading": "Webhooks",
+          "relevant": false
+        },
+        {
+          "source": "corpus/03-webhooks.md",
+          "heading": "Webhooks \u203a Delivery guarantees",
+          "relevant": false
+        },
+        {
+          "source": "corpus/03-webhooks.md",
+          "heading": "Webhooks \u203a Event types",
+          "relevant": false
+        }
+      ],
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "fact_hit_reranked": 1.0,
+      "fact_mrr_reranked": 1.0,
+      "reranked_chunks": [
+        {
+          "source": "corpus/03-webhooks.md",
+          "heading": "Webhooks \u203a Retry schedule",
+          "rerank_score": 7,
+          "relevant": true
+        },
+        {
+          "source": "corpus/07-oncall-runbook.md",
+          "heading": "On-call runbook \u203a `WebhookQueueDepthHigh`",
+          "rerank_score": 7,
+          "relevant": false
+        },
+        {
+          "source": "corpus/03-webhooks.md",
+          "heading": "Webhooks",
+          "rerank_score": 1,
+          "relevant": false
+        },
+        {
+          "source": "corpus/03-webhooks.md",
+          "heading": "Webhooks \u203a Delivery guarantees",
+          "rerank_score": 1,
+          "relevant": false
+        },
+        {
+          "source": "corpus/03-webhooks.md",
+          "heading": "Webhooks \u203a Event types",
+          "rerank_score": 1,
+          "relevant": false
+        }
+      ],
+      "rerank_timings": {
+        "embed_ms": 0,
+        "search_ms": 0,
+        "rerank_ms": 1849,
+        "reranker": "llm:gemini-flash-lite-latest",
+        "candidates": 12,
+        "reordered_by_rerank": 6
+      },
+      "usage": {
+        "rerank_ms": 1849,
+        "search_ms": 0,
+        "embed_ms": 0
+      },
+      "correct": null,
+      "refused": null
+    },
+    {
+      "id": "q07",
+      "type": "semantic",
+      "question": "Why isn't the money-recording system run in both regions at once?",
+      "search_ms": 4,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "fact_hit_fusion": 1.0,
+      "fact_mrr_fusion": 1.0,
+      "fusion_chunks": [
+        {
+          "source": "corpus/01-architecture.md",
+          "heading": "Northwind Payments \u2014 Platform Architecture \u203a Multi-region",
+          "relevant": true
+        },
+        {
+          "source": "corpus/01-architecture.md",
+          "heading": "Northwind Payments \u2014 Platform Architecture \u203a Service map",
+          "relevant": false
+        },
+        {
+          "source": "corpus/01-architecture.md",
+          "heading": "Northwind Payments \u2014 Platform Architecture",
+          "relevant": false
+        },
+        {
+          "source": "corpus/08-data-retention.md",
+          "heading": "Data retention and PII \u203a Retention periods",
+          "relevant": false
+        },
+        {
+          "source": "corpus/01-architecture.md",
+          "heading": "Northwind Payments \u2014 Platform Architecture \u203a Storage",
+          "relevant": false
+        }
+      ],
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "fact_hit_reranked": 1.0,
+      "fact_mrr_reranked": 1.0,
+      "reranked_chunks": [
+        {
+          "source": "corpus/01-architecture.md",
+          "heading": "Northwind Payments \u2014 Platform Architecture \u203a Multi-region",
+          "rerank_score": 10,
+          "relevant": true
+        },
+        {
+          "source": "corpus/01-architecture.md",
+          "heading": "Northwind Payments \u2014 Platform Architecture \u203a Storage",
+          "rerank_score": 4,
+          "relevant": false
+        },
+        {
+          "source": "corpus/07-oncall-runbook.md",
+          "heading": "On-call runbook \u203a `LedgerReplicationLag`",
+          "rerank_score": 4,
+          "relevant": false
+        },
+        {
+          "source": "corpus/01-architecture.md",
+          "heading": "Northwind Payments \u2014 Platform Architecture \u203a Service map",
+          "rerank_score": 1,
+          "relevant": false
+        },
+        {
+          "source": "corpus/01-architecture.md",
+          "heading": "Northwind Payments \u2014 Platform Architecture",
+          "rerank_score": 1,
+          "relevant": false
+        }
+      ],
+      "rerank_timings": {
+        "embed_ms": 0,
+        "search_ms": 0,
+        "rerank_ms": 6524,
+        "reranker": "llm:gemini-flash-lite-latest",
+        "candidates": 12,
+        "reordered_by_rerank": 11
+      },
+      "usage": {
+        "rerank_ms": 6524,
+        "search_ms": 0,
+        "embed_ms": 0
+      },
+      "correct": null,
+      "refused": null
+    },
+    {
+      "id": "q08",
+      "type": "lexical",
+      "question": "How do I verify the Northwind-Signature header?",
+      "search_ms": 8,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "fact_hit_fusion": 1.0,
+      "fact_mrr_fusion": 1.0,
+      "fusion_chunks": [
+        {
+          "source": "corpus/03-webhooks.md",
+          "heading": "Webhooks \u203a Signature verification",
+          "relevant": true
+        },
+        {
+          "source": "corpus/03-webhooks.md",
+          "heading": "Webhooks",
+          "relevant": false
+        },
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency",
+          "relevant": false
+        },
+        {
+          "source": "corpus/05-error-codes.md",
+          "heading": "Error codes",
+          "relevant": false
+        },
+        {
+          "source": "corpus/08-data-retention.md",
+          "heading": "Data retention and PII",
+          "relevant": false
+        }
+      ],
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "fact_hit_reranked": 1.0,
+      "fact_mrr_reranked": 1.0,
+      "reranked_chunks": [
+        {
+          "source": "corpus/03-webhooks.md",
+          "heading": "Webhooks \u203a Signature verification",
+          "rerank_score": 10,
+          "relevant": true
+        },
+        {
+          "source": "corpus/03-webhooks.md",
+          "heading": "Webhooks",
+          "rerank_score": 4,
+          "relevant": false
+        },
+        {
+          "source": "corpus/01-architecture.md",
+          "heading": "Northwind Payments \u2014 Platform Architecture \u203a The payment path",
+          "rerank_score": 1,
+          "relevant": false
+        },
+        {
+          "source": "corpus/01-architecture.md",
+          "heading": "Northwind Payments \u2014 Platform Architecture \u203a Storage",
+          "rerank_score": 1,
+          "relevant": false
+        },
+        {
+          "source": "corpus/01-architecture.md",
+          "heading": "Northwind Payments \u2014 Platform Architecture \u203a Service map",
+          "rerank_score": 1,
+          "relevant": false
+        }
+      ],
+      "rerank_timings": {
+        "embed_ms": 0,
+        "search_ms": 1,
+        "rerank_ms": 1492,
+        "reranker": "llm:gemini-flash-lite-latest",
+        "candidates": 12,
+        "reordered_by_rerank": 7
+      },
+      "usage": {
+        "rerank_ms": 1492,
+        "search_ms": 1,
+        "embed_ms": 0
+      },
+      "correct": null,
+      "refused": null
+    },
+    {
+      "id": "q09",
+      "type": "semantic",
+      "question": "A customer has raised a chargeback. Can we still refund them through the API?",
+      "search_ms": 8,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "fact_hit_fusion": 1.0,
+      "fact_mrr_fusion": 0.2,
+      "fusion_chunks": [
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds",
+          "relevant": false
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a API",
+          "relevant": false
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a Eligibility window",
+          "relevant": false
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a Balance and funding",
+          "relevant": false
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a Failure modes",
+          "relevant": true
+        }
+      ],
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "fact_hit_reranked": 1.0,
+      "fact_mrr_reranked": 1.0,
+      "reranked_chunks": [
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a Failure modes",
+          "rerank_score": 10,
+          "relevant": true
+        },
+        {
+          "source": "corpus/05-error-codes.md",
+          "heading": "Error codes \u203a 4xx \u2014 the request was wrong",
+          "rerank_score": 7,
+          "relevant": true
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds",
+          "rerank_score": 4,
+          "relevant": false
+        },
+        {
+          "source": "corpus/04-refunds.md",
+          "heading": "Refunds \u203a Balance and funding",
+          "rerank_score": 4,
+          "relevant": false
+        },
+        {
+          "source": "corpus/01-architecture.md",
+          "heading": "Northwind Payments \u2014 Platform Architecture \u203a State machine",
+          "rerank_score": 4,
+          "relevant": false
+        }
+      ],
+      "rerank_timings": {
+        "embed_ms": 0,
+        "search_ms": 2,
+        "rerank_ms": 2973,
+        "reranker": "llm:gemini-flash-lite-latest",
+        "candidates": 12,
+        "reordered_by_rerank": 10
+      },
+      "usage": {
+        "rerank_ms": 2973,
+        "search_ms": 2,
+        "embed_ms": 0
+      },
+      "correct": null,
+      "refused": null
+    },
+    {
+      "id": "q10",
+      "type": "multihop",
+      "question": "If Redis becomes unavailable, what happens to payment writes?",
+      "search_ms": 4,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "fact_hit_fusion": 1.0,
+      "fact_mrr_fusion": 1.0,
+      "fusion_chunks": [
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a Implementation notes",
+          "relevant": true
+        },
+        {
+          "source": "corpus/01-architecture.md",
+          "heading": "Northwind Payments \u2014 Platform Architecture \u203a Storage",
+          "relevant": false
+        },
+        {
+          "source": "corpus/01-architecture.md",
+          "heading": "Northwind Payments \u2014 Platform Architecture \u203a The payment path",
+          "relevant": false
+        },
+        {
+          "source": "corpus/06-rate-limits.md",
+          "heading": "Rate limits \u203a Why a token bucket",
+          "relevant": false
+        },
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a Retention",
+          "relevant": false
+        }
+      ],
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "fact_hit_reranked": 1.0,
+      "fact_mrr_reranked": 1.0,
+      "reranked_chunks": [
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a Implementation notes",
+          "rerank_score": 10,
+          "relevant": true
+        },
+        {
+          "source": "corpus/01-architecture.md",
+          "heading": "Northwind Payments \u2014 Platform Architecture \u203a Storage",
+          "rerank_score": 4,
+          "relevant": false
+        },
+        {
+          "source": "corpus/01-architecture.md",
+          "heading": "Northwind Payments \u2014 Platform Architecture \u203a The payment path",
+          "rerank_score": 1,
+          "relevant": false
+        },
+        {
+          "source": "corpus/06-rate-limits.md",
+          "heading": "Rate limits \u203a Why a token bucket",
+          "rerank_score": 1,
+          "relevant": false
+        },
+        {
+          "source": "corpus/02-idempotency.md",
+          "heading": "Idempotency \u203a Retention",
+          "rerank_score": 1,
+          "relevant": false
+        }
+      ],
+      "rerank_timings": {
+        "embed_ms": 0,
+        "search_ms": 1,
+        "rerank_ms": 1693,
+        "reranker": "llm:gemini-flash-lite-latest",
+        "candidates": 12,
+        "reordered_by_rerank": 5
+      },
+      "usage": {
+        "rerank_ms": 1693,
+        "search_ms": 1,
+        "embed_ms": 0
+      },
+      "correct": null,
+      "refused": null
+    },
+    {
+      "id": "q11",
+      "type": "semantic",
+      "question": "What request rate does a merchant on the Growth plan get?",
+      "search_ms": 7,
+      "recall_fusion": 1.0,
+      "mrr_fusion": 1.0,
+      "fact_hit_fusion": 1.0,
+      "fact_mrr_fusion": 1.0,
+      "fusion_chunks": [
+        {
+          "source": "corpus/06-rate-limits.md",
+          "heading": "Rate limits \u203a Limits by plan",
+          "relevant": true
+        },
+        {
+          "source": "corpus/06-rate-limits.md",
+          "heading": "Rate limits",
+          "relevant": false
+        },
+        {
+          "source": "corpus/06-rate-limits.md",
+          "heading": "Rate limits \u203a Limits that are not rate limits",
+          "relevant": true
+        },
+        {
+          "source": "corpus/06-rate-limits.md",
+          "heading": "Rate limits \u203a Exceeding the limit",
+          "relevant": false
+        },
+        {
+          "source": "corpus/03-webhooks.md",
+          "heading": "Webhooks \u203a Retry schedule",
+          "relevant": false
+        }
+      ],
+      "recall_reranked": 1.0,
+      "mrr_reranked": 1.0,
+      "fact_hit_reranked": 1.0,
+      "fact_mrr_reranked": 1.0,
+      "reranked_chunks": [
+        {
+          "source": "corpus/06-rate-limits.md",
+          "heading": "Rate limits \u203a Limits by plan",
+          "rerank_score": 10,
+          "relevant": true
+        },
+        {
+          "source": "corpus/06-rate-limits.md",
+          "heading": "Rate limits",
+          "rerank_score": 1,
+          "relevant": false
+        },
+        {
+          "source": "corpus/06-rate-limits.md",
+          "heading": "Rate limits \u203a Limits that are not rate limits",
+          "rerank_score": 1,
+          "relevant": true
+        },
+        {
+          "source": "corpus/06-rate-limits.md",
+          "heading": "Rate limits \u203a Exceeding the limit",
+          "rerank_score": 1,
+          "relevant": false
+        },
+        {
+          "source": "corpus/06-rate-limits.md",
+          "heading": "Rate limits \u203a Why a token bucket",
+          "rerank_score": 1,
+          "relevant": false
+        }
+      ],
+      "rerank_timings": {
+        "embed_ms": 0,
+        "search_ms": 1,
+        "rerank_ms": 1459,
+        "reranker": "llm:gemini-flash-lite-latest",
+        "candidates": 12,
+        "reordered_by_rerank": 8
+      },
+      "usage": {
+        "rerank_ms": 1459,
+        "search_ms": 1,
+        "embed_ms": 0
+      },
+      "correct": null,
+      "refused": null
+    },
+    {
+      "id": "q12",
+      "type": "unanswerable",
+      "question": "What does Northwind charge per transaction in euros?",
+      "search_ms": 3,
+      "recall_fusion": NaN,
+      "mrr_fusion": NaN,
+      "recall_reranked": NaN,
+      "mrr_reranked": NaN,
+      "rerank_timings": {
+        "embed_ms": 0,
+        "search_ms": 0,
+        "rerank_ms": 2038,
+        "reranker": "llm:gemini-flash-lite-latest",
+        "candidates": 12,
+        "reordered_by_rerank": 11
+      },
+      "usage": {
+        "rerank_ms": 2038,
+        "search_ms": 0,
+        "embed_ms": 0
+      },
+      "correct": null,
+      "refused": null
+    },
+    {
+      "id": "q13",
+      "type": "unanswerable",
+      "question": "Which Kubernetes version do the payment services run on?",
+      "search_ms": 5,
+      "recall_fusion": NaN,
+      "mrr_fusion": NaN,
+      "recall_reranked": NaN,
+      "mrr_reranked": NaN,
+      "rerank_timings": {
+        "embed_ms": 0,
+        "search_ms": 1,
+        "rerank_ms": 1515,
+        "reranker": "llm:gemini-flash-lite-latest",
+        "candidates": 12,
+        "reordered_by_rerank": 0
+      },
+      "usage": {
+        "rerank_ms": 1515,
+        "search_ms": 1,
+        "embed_ms": 0
+      },
+      "correct": null,
+      "refused": null
+    }
+  ]
+}
