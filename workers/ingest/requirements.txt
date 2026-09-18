@@ -1,0 +1,6 @@
+# Pinned exactly. A floating dependency in an ingestion worker means the
+# embedding client can change behaviour between two deploys of the same corpus,
+# and a corpus embedded by two different client versions is quietly inconsistent.
+psycopg[binary]==3.3.6
+kafka-python-ng==2.2.3
+numpy==2.3.5
