@@ -1,0 +1,101 @@
+# ragline local stack.
+#
+# Ports are deliberately offset from the defaults (5433, 6380, 9094) so this can
+# run alongside another project's Postgres, Redis and Kafka without a collision.
+#
+#   make up && make ingest && make ask Q="how long are idempotency keys kept?"
+name: ragline
+
+services:
+  postgres:
+    # pgvector image rather than stock postgres: the schema creates the vector
+    # extension at startup and stock postgres does not ship it.
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: ragline
+      POSTGRES_PASSWORD: ragline
+      POSTGRES_DB: ragline
+    ports: ["5433:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ragline -d ragline"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no",
+              "--maxmemory", "512mb", "--maxmemory-policy", "allkeys-lru"]
+    ports: ["6380:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  kafka:
+    image: apache/kafka:3.8.0
+    ports: ["9094:9094"]
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENERS: EXTERNAL://:9094,CONTROLLER://:9093,INTERNAL://:29092
+      KAFKA_ADVERTISED_LISTENERS: EXTERNAL://localhost:9094,INTERNAL://kafka:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: EXTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      CLUSTER_ID: ragline-local-cluster
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:29092 >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+
+  gateway:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.gateway
+    ports: ["8081:8081"]
+    environment:
+      POSTGRES_DSN: postgres://ragline:ragline@postgres:5432/ragline?sslmode=disable
+      REDIS_ADDR: redis:6379
+      KAFKA_BROKERS: kafka:29092
+      GEMINI_API_KEY: ${GEMINI_API_KEY:?GEMINI_API_KEY must be set}
+      GENERATION_MODEL: ${GENERATION_MODEL:-gemini-flash-latest}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-gemini-embedding-001}
+      RERANK_MODEL: ${RERANK_MODEL:-gemini-flash-lite-latest}
+      RERANKER_MODE: ${RERANKER_MODE:-llm}
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis:    { condition: service_healthy }
+      kafka:    { condition: service_healthy }
+
+  ingest:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.ingest
+    environment:
+      POSTGRES_DSN: postgres://ragline:ragline@postgres:5432/ragline?sslmode=disable
+      KAFKA_BROKERS: kafka:29092
+      GEMINI_API_KEY: ${GEMINI_API_KEY:?GEMINI_API_KEY must be set}
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-gemini-embedding-001}
+      EMBEDDING_DIM: ${EMBEDDING_DIM:-1536}
+    depends_on:
+      postgres: { condition: service_healthy }
+      kafka:    { condition: service_healthy }
+      gateway:  { condition: service_started }
+    # Two replicas: ingestion is embarrassingly parallel across documents, and
+    # running more than one proves the per-document transaction actually isolates.
+    deploy:
+      replicas: 2
+
+volumes:
+  pgdata:
