@@ -41,6 +41,9 @@ type Config struct {
 	ContextTopN int // chunks that actually reach the generator
 
 	RerankerMode string // "llm" | "off"
+	// KeywordRanking is "bm25" (default) or "ts_rank". ts_rank_cd is kept as a
+	// control arm so the evaluation can measure what BM25 actually bought.
+	KeywordRanking string
 
 	// Rate limiting: a token bucket per client.
 	RateLimitPerMinute int
@@ -78,6 +81,7 @@ func Load() (*Config, error) {
 		RerankTopN:         envInt("RERANK_TOP_N", 12),
 		ContextTopN:        envInt("CONTEXT_TOP_N", 5),
 		RerankerMode:       env("RERANKER_MODE", "llm"),
+		KeywordRanking:     env("KEYWORD_RANKING", "bm25"),
 		RateLimitPerMinute: envInt("RATE_LIMIT_PER_MINUTE", 30),
 		RateLimitBurst:     envInt("RATE_LIMIT_BURST", 10),
 		AnswerCacheTTL:     envDur("ANSWER_CACHE_TTL", 15*time.Minute),
