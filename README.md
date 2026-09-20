@@ -125,4 +125,3 @@ docs/                  Architecture, results, interview guide
 
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — why each piece is shaped this way
 - [docs/RESULTS.md](docs/RESULTS.md) — measured retrieval, groundedness, latency and cost
-- [docs/INTERVIEW-GUIDE.md](docs/INTERVIEW-GUIDE.md) — decisions, trade-offs, and the bugs found while building it
