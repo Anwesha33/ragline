@@ -7,6 +7,25 @@ make eval                                            # full run
 ./.venv/bin/python eval/run_eval.py --retrieval-only # retrieval + reranking only, no generation
 ```
 
+## Which configuration produced these numbers
+
+**Every figure in this document was measured with the keyword arm scored by
+`ts_rank_cd`**, which was the only lexical scorer at the time. The default is now
+BM25 (`KEYWORD_RANKING=bm25`), so a fresh `make eval` measures a different
+configuration and the retrieval numbers may not match.
+
+That comparison — BM25 against `ts_rank_cd` on the golden set — has not been run.
+It is exactly what the control arm exists for:
+
+```bash
+KEYWORD_RANKING=ts_rank make eval    # reproduces the numbers below
+KEYWORD_RANKING=bm25    make eval    # the current default
+```
+
+Worth knowing before running it: fusion is RRF, which reads only rank *order*, so
+the lexical scorer changes the keyword arm's ordering and nothing else. That
+bounds how much the end-to-end numbers can move.
+
 ## What is measured, and why it is measured this way
 
 Three things, kept separate because they fail for different reasons and have
