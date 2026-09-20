@@ -29,7 +29,12 @@ const (
 
 var ErrNotFound = errors.New("not found")
 
-type Store struct{ pool *pgxpool.Pool }
+type Store struct {
+	pool *pgxpool.Pool
+	// KeywordRanking selects the lexical scorer. Set once at startup from
+	// configuration; empty means BM25.
+	KeywordRanking KeywordRanking
+}
 
 func Open(ctx context.Context, dsn string) (*Store, error) {
 	cfg, err := pgxpool.ParseConfig(dsn)
@@ -46,7 +51,7 @@ func Open(ctx context.Context, dsn string) (*Store, error) {
 		pool.Close()
 		return nil, err
 	}
-	return &Store{pool: pool}, nil
+	return &Store{pool: pool, KeywordRanking: KeywordBM25}, nil
 }
 
 func (s *Store) Close()                         { s.pool.Close() }
@@ -217,14 +222,112 @@ JOIN documents d ON d.id = ch.document_id
 ORDER BY f.rrf DESC, ch.id
 LIMIT $6`
 
-// HybridSearch runs both retrievers and fuses them. Passing an empty query
-// embedding is legal and degrades to keyword-only search, which is what happens
-// when the embedding API is down — a worse answer beats a 500.
+// KeywordRanking selects the lexical scorer for the keyword arm.
+//
+// BM25 is the default because it is the standard lexical baseline and what
+// "hybrid search" normally means. ts_rank_cd is kept as a control arm: the
+// evaluation harness can run the golden set under each and report the
+// difference, which is the only way to claim BM25 helped rather than assume it.
+type KeywordRanking string
+
+const (
+	KeywordBM25   KeywordRanking = "bm25"
+	KeywordTsRank KeywordRanking = "ts_rank"
+)
+
+// BM25 constants. k1 controls how quickly term frequency saturates — a term
+// appearing ten times is not ten times as relevant as appearing once — and b
+// controls how much a long passage is penalised for its length. 1.2 and 0.75
+// are the values nearly every implementation uses, and tuning them on 13
+// golden questions would be fitting noise rather than tuning.
+const (
+	bm25K1 = 1.2
+	bm25B  = 0.75
+)
+
+// hybridSearchBM25SQL is hybridSearchSQL with the keyword arm scored by BM25.
+//
+// Postgres cannot do this natively: ts_rank_cd is coverage density, which
+// rewards query terms appearing close together and knows nothing about how rare
+// a term is across the corpus or how long the passage is. BM25 is
+//
+//	score(D,Q) = Σ IDF(t) · tf(t,D)·(k1+1) / ( tf(t,D) + k1·(1 - b + b·|D|/avgdl) )
+//
+// with IDF(t) = ln(1 + (N - df(t) + 0.5)/(df(t) + 0.5)) — the Lucene form,
+// which stays positive even for a term present in almost every chunk.
+//
+// The statistics it needs (tf, df, |D|, N, avgdl) are maintained by trigger in
+// schema.sql, so they are written in the same transaction as the chunk.
+const hybridSearchBM25SQL = `
+WITH vector_hits AS (
+    SELECT c.id, ROW_NUMBER() OVER (ORDER BY c.embedding <=> $1::vector) AS rank
+    FROM chunks c
+    WHERE c.embedding IS NOT NULL
+    ORDER BY c.embedding <=> $1::vector
+    LIMIT $2
+),
+query_terms AS (
+    SELECT DISTINCT u.lexeme AS term FROM unnest(to_tsvector('english', $3)) u
+),
+bm25_corpus AS (
+    SELECT GREATEST(chunk_count, 1)::float8 AS n,
+           GREATEST(total_len, 1)::float8 / GREATEST(chunk_count, 1)::float8 AS avgdl
+    FROM corpus_stats WHERE only_row
+),
+keyword_hits AS (
+    SELECT id, ROW_NUMBER() OVER (ORDER BY score DESC, id) AS rank
+    FROM (
+        SELECT ct.chunk_id AS id,
+               SUM(
+                   ln(1 + (bc.n - cterm.df + 0.5) / (cterm.df + 0.5))
+                   * (ct.tf * ($7::float8 + 1))
+                   / (ct.tf + $7::float8 * (1 - $8::float8 + $8::float8 * cs.len / bc.avgdl))
+               ) AS score
+        FROM query_terms qt
+        JOIN corpus_terms cterm ON cterm.term = qt.term
+        JOIN chunk_terms  ct    ON ct.term = qt.term
+        JOIN chunk_stats  cs    ON cs.chunk_id = ct.chunk_id
+        CROSS JOIN bm25_corpus bc
+        GROUP BY ct.chunk_id
+    ) scored
+    ORDER BY score DESC, id
+    LIMIT $4
+),
+fused AS (
+    SELECT id, SUM(score) AS rrf FROM (
+        SELECT id, 1.0 / ($5 + rank) AS score FROM vector_hits
+        UNION ALL
+        SELECT id, 1.0 / ($5 + rank) AS score FROM keyword_hits
+    ) s GROUP BY id
+)
+SELECT ch.id, ch.document_id, d.title, d.source_uri, ch.ordinal, ch.heading, ch.content,
+       f.rrf,
+       COALESCE((SELECT v.rank FROM vector_hits v WHERE v.id = ch.id), 0),
+       COALESCE((SELECT k.rank FROM keyword_hits k WHERE k.id = ch.id), 0)
+FROM fused f
+JOIN chunks ch  ON ch.id = f.id
+JOIN documents d ON d.id = ch.document_id
+ORDER BY f.rrf DESC, ch.id
+LIMIT $6`
+
+// HybridSearch runs both retrievers and fuses them.
+//
+// The embedding is required: pgvector rejects a zero-dimension vector, so an
+// empty one is an error rather than a graceful degradation. The keyword-only
+// fallback taken when the embedding API is down is KeywordSearch, which the
+// chat path calls explicitly — a worse answer beats a 500.
 func (s *Store) HybridSearch(ctx context.Context, embedding []float32, query string,
 	vectorK, keywordK, rrfK, limit int) ([]Chunk, error) {
 
-	rows, err := s.pool.Query(ctx, hybridSearchSQL,
-		vectorLiteral(embedding), vectorK, query, keywordK, rrfK, limit)
+	var rows pgx.Rows
+	var err error
+	if s.KeywordRanking == KeywordTsRank {
+		rows, err = s.pool.Query(ctx, hybridSearchSQL,
+			vectorLiteral(embedding), vectorK, query, keywordK, rrfK, limit)
+	} else {
+		rows, err = s.pool.Query(ctx, hybridSearchBM25SQL,
+			vectorLiteral(embedding), vectorK, query, keywordK, rrfK, limit, bm25K1, bm25B)
+	}
 	if err != nil {
 		return nil, fmt.Errorf("hybrid search: %w", err)
 	}
@@ -243,8 +346,9 @@ func (s *Store) HybridSearch(ctx context.Context, embedding []float32, query str
 }
 
 // KeywordSearch is the fallback path used when no embedding is available.
-func (s *Store) KeywordSearch(ctx context.Context, query string, limit int) ([]Chunk, error) {
-	const q = `
+// keywordSearchTsRankSQL is the original coverage-density scorer, kept as the
+// control arm.
+const keywordSearchTsRankSQL = `
 	SELECT ch.id, ch.document_id, d.title, d.source_uri, ch.ordinal, ch.heading, ch.content,
 	       ts_rank_cd(ch.tsv, qy) AS score,
 	       0, ROW_NUMBER() OVER (ORDER BY ts_rank_cd(ch.tsv, qy) DESC, ch.id)
@@ -253,7 +357,53 @@ func (s *Store) KeywordSearch(ctx context.Context, query string, limit int) ([]C
 	WHERE ch.tsv @@ qy
 	ORDER BY score DESC, ch.id
 	LIMIT $2`
-	rows, err := s.pool.Query(ctx, q, query, limit)
+
+// keywordSearchBM25SQL scores the same candidates with BM25.
+//
+// This path matters more than it looks: it is the fallback taken when the
+// embedding API is down. If it ranked differently from the keyword arm of
+// hybrid search, the degraded mode would be degraded in a second, undocumented
+// way — so both use the same scorer.
+const keywordSearchBM25SQL = `
+	WITH query_terms AS (
+	    SELECT DISTINCT u.lexeme AS term FROM unnest(to_tsvector('english', $1)) u
+	),
+	bm25_corpus AS (
+	    SELECT GREATEST(chunk_count, 1)::float8 AS n,
+	           GREATEST(total_len, 1)::float8 / GREATEST(chunk_count, 1)::float8 AS avgdl
+	    FROM corpus_stats WHERE only_row
+	),
+	scored AS (
+	    SELECT ct.chunk_id AS id,
+	           SUM(
+	               ln(1 + (bc.n - cterm.df + 0.5) / (cterm.df + 0.5))
+	               * (ct.tf * ($3::float8 + 1))
+	               / (ct.tf + $3::float8 * (1 - $4::float8 + $4::float8 * cs.len / bc.avgdl))
+	           ) AS score
+	    FROM query_terms qt
+	    JOIN corpus_terms cterm ON cterm.term = qt.term
+	    JOIN chunk_terms  ct    ON ct.term = qt.term
+	    JOIN chunk_stats  cs    ON cs.chunk_id = ct.chunk_id
+	    CROSS JOIN bm25_corpus bc
+	    GROUP BY ct.chunk_id
+	)
+	SELECT ch.id, ch.document_id, d.title, d.source_uri, ch.ordinal, ch.heading, ch.content,
+	       sc.score,
+	       0, ROW_NUMBER() OVER (ORDER BY sc.score DESC, ch.id)
+	FROM scored sc
+	JOIN chunks ch   ON ch.id = sc.id
+	JOIN documents d ON d.id = ch.document_id
+	ORDER BY sc.score DESC, ch.id
+	LIMIT $2`
+
+func (s *Store) KeywordSearch(ctx context.Context, query string, limit int) ([]Chunk, error) {
+	var rows pgx.Rows
+	var err error
+	if s.KeywordRanking == KeywordTsRank {
+		rows, err = s.pool.Query(ctx, keywordSearchTsRankSQL, query, limit)
+	} else {
+		rows, err = s.pool.Query(ctx, keywordSearchBM25SQL, query, limit, bm25K1, bm25B)
+	}
 	if err != nil {
 		return nil, err
 	}

@@ -72,9 +72,9 @@ the question.
 
 Combining them requires a decision about how to merge two rankings. A weighted
 sum of raw scores is the obvious approach and the wrong one: cosine distance and
-`ts_rank_cd` are on incomparable scales, and their distributions shift with
-corpus size and query length, so any fixed weighting is tuned to one corpus and
-wrong on the next.
+a lexical relevance score are on incomparable scales, and their distributions
+shift with corpus size and query length, so any fixed weighting is tuned to one
+corpus and wrong on the next.
 
 Reciprocal Rank Fusion sidesteps the problem by reading only the ordering:
 
@@ -88,6 +88,58 @@ between independent retrievers is evidence, and RRF spends it correctly.
 
 The whole thing is one SQL statement with two CTEs, so there is no application
 code holding two result sets and no second round trip.
+
+## The lexical scorer is BM25, and Postgres cannot do it
+
+Postgres full-text search ranks with `ts_rank_cd` — coverage density. It rewards
+passages where the query terms appear close together, and it has **no notion of
+how rare a term is across the corpus, and none of how long the passage is.**
+Those two properties are most of what makes a lexical ranker good, and both are
+in BM25:
+
+```
+score(D,Q) = Σ  IDF(t) ·        tf(t,D) · (k1 + 1)
+                        ───────────────────────────────────
+                        tf(t,D) + k1 · (1 - b + b · |D|/avgdl)
+
+IDF(t) = ln(1 + (N - df(t) + 0.5) / (df(t) + 0.5))
+```
+
+with `k1 = 1.2` and `b = 0.75`. IDF is the Lucene form, which stays positive
+even for a term present in almost every chunk. `k1` controls how quickly term
+frequency saturates — a term appearing ten times is not ten times as relevant —
+and `b` how hard a long passage is penalised for its length.
+
+Postgres core ships none of this, so the statistics are maintained here: a
+per-chunk term frequency table, a corpus-wide document frequency table, and the
+two scalars that give the average chunk length.
+
+**They are maintained by trigger, not by a materialised view refreshed after
+ingestion.** A refresh would open a window in which a chunk is searchable but
+its term statistics are not yet counted — exactly the half-written state the
+generated `tsvector` column was chosen to make impossible. A trigger writes the
+statistics in the same transaction as the chunk, so they cannot disagree. The
+cost is write amplification at ingest, which is the right side of that trade for
+a corpus that is read far more often than it is written.
+
+**Heading weight is preserved as an approximation of BM25F.** The `tsvector`
+weights headings `A` and bodies `B`; BM25 has no concept of fields, so an
+`A`-weighted occurrence is counted twice. That keeps the property the weighted
+index already had rather than silently discarding it.
+
+**`ts_rank_cd` is kept as a control arm.** `KEYWORD_RANKING=ts_rank` selects it,
+which is what makes "BM25 improved retrieval" a measurement rather than an
+assumption — the same reason `RERANKER_MODE=off` exists. Run the golden set
+under each and compare.
+
+One consequence worth naming: because fusion is RRF, which reads only rank
+*order*, changing the lexical scorer changes the keyword arm's ordering and
+nothing else. That bounds how much BM25 can move the final answer, and it is an
+argument for measuring the difference rather than assuming it.
+
+An upgrade note, because the failure mode is silent: a corpus ingested before
+this existed has chunks that are searchable by `tsvector` and invisible to BM25.
+`Migrate` backfills the statistics once, and is idempotent.
 
 ## Reranking
 

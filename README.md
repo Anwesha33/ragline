@@ -38,7 +38,7 @@ then reranked before an LLM answers with citations over a streaming response.
 - **A real ingestion pipeline**, not a loop over a folder: Kafka, retries, a
   dead-letter topic, per-document transactions so a re-ingest replaces a
   document's chunks instead of appending to them, and status you can query.
-- **Hybrid retrieval that is actually hybrid.** Vector search and Postgres
+- **Hybrid retrieval that is actually hybrid.** Vector search and BM25
   full-text search run as independent rankers and are combined with Reciprocal
   Rank Fusion, which needs no score normalisation and no per-corpus tuning.
 - **Reranking, measured.** The reranker's contribution to recall and MRR is a
@@ -89,12 +89,16 @@ make eval                                # score against the golden set
    embedded with `RETRIEVAL_DOCUMENT`. Using one task type for both degrades
    retrieval silently — search still works, it just returns worse results.
 2. **Two independent searches.** pgvector cosine distance over an HNSW index,
-   and Postgres full-text search with `ts_rank_cd` over a generated `tsvector`
-   that weights headings above body text.
+   and **BM25** over a generated `tsvector` that weights headings above body
+   text. Postgres cannot do BM25 natively — its `ts_rank_cd` is coverage
+   density, with no notion of term rarity or passage length — so the term
+   statistics BM25 needs are maintained by trigger, in the same transaction as
+   the chunk. `KEYWORD_RANKING=ts_rank` switches back to `ts_rank_cd` as a
+   control arm, so the difference can be measured rather than assumed.
 3. **Reciprocal Rank Fusion.** `score = Σ 1/(k + rank)` with `k = 60`. RRF reads
-   only the ordering, so it needs no normalisation between cosine distance and
-   `ts_rank_cd` — two quantities on incomparable scales whose distributions
-   shift as the corpus grows.
+   only the ordering, so it needs no normalisation between cosine distance and a
+   BM25 score — two quantities on incomparable scales whose distributions shift
+   as the corpus grows.
 4. **Rerank** the top 12 candidates with a listwise LLM call, keeping the top 5.
    Retrieval optimises for recall; the generator can only read a handful of
    passages, so something has to turn a high-recall candidate set into a

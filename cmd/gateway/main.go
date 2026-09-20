@@ -52,6 +52,11 @@ func main() {
 	}
 	defer st.Close()
 
+	// Set once at startup. BM25 is the default; "ts_rank" selects the old
+	// coverage-density scorer, which the evaluation uses as a control arm.
+	st.KeywordRanking = store.KeywordRanking(cfg.KeywordRanking)
+	log.Info("keyword ranking", "mode", st.KeywordRanking)
+
 	// The gateway owns the schema so the corpus tables exist before the first
 	// upload, whether or not an ingest worker has ever started.
 	if err := st.Migrate(ctx); err != nil {
